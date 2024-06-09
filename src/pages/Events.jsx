@@ -48,7 +48,7 @@ export default function Events() {
 
         <div className="py-4 grid grid-cols-3 gap-4">
           {events?.map((event) => (
-            <EventCard key={event._id} eventInfo={event} />
+            <EventCard key={event._id} eventInfo={event} setTriggerRerender={setTriggerRerender} />
           ))}
         </div>
       </div>

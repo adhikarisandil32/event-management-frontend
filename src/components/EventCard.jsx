@@ -1,11 +1,11 @@
-import React from "react"
+import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
-export default function EventCard({ eventInfo }) {
+export default function EventCard({ eventInfo, setTriggerRerender }) {
   const navigate = useNavigate()
 
   const handleDelete = async (idForDeletion) => {
-    await fetch(`${import.meta.env.VITE_BASE_URL}/events`, {
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/events`, {
       method: "DELETE",
       body: JSON.stringify({ id: idForDeletion }),
       headers: {
@@ -13,6 +13,11 @@ export default function EventCard({ eventInfo }) {
       },
       credentials: "include",
     })
+    const reponseJSON = await response.json()
+
+    if (reponseJSON.success) {
+      setTriggerRerender((prev) => !prev)
+    }
   }
 
   return (
