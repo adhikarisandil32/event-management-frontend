@@ -13,6 +13,7 @@ export default function Register() {
   } = useForm()
   const [registerSuccess, setRegisterSuccess] = useState(false)
   const [serverError, setServerError] = useState()
+  const [isLoading, setIsLoading] = useState(false)
 
   const submitFn = async (data) => {
     if (data.password !== data.rePassword) {
@@ -31,29 +32,38 @@ export default function Register() {
       fullName: data.name,
     }
 
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/users/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(dataToPost),
-    })
-    const responseJSON = await response.json()
+    try {
+      setIsLoading(true)
 
-    if (responseJSON.success) {
-      setRegisterSuccess(true)
-      setTimeout(() => {
-        navigate("/login")
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/users/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToPost),
+      })
+      const responseJSON = await response.json()
+      setIsLoading(false)
+
+      if (responseJSON.success) {
+        setRegisterSuccess(true)
+        setTimeout(() => {
+          navigate("/login")
+          setRegisterSuccess(false)
+        }, 1500)
+      } else {
         setRegisterSuccess(false)
-      }, 1500)
-    } else {
-      setRegisterSuccess(false)
-      setServerError(responseJSON.message)
-      setTimeout(() => {
-        setServerError("")
-      }, 1500)
+        setServerError(responseJSON.message)
+        setTimeout(() => {
+          setServerError("")
+        }, 1500)
+      }
+
+      return
+    } catch (error) {
+      setIsLoading(false)
+      console.error(error)
     }
-    return
   }
 
   return (
@@ -125,8 +135,9 @@ export default function Register() {
           <div>
             <button
               type="submit"
-              className="w-full rounded-md text-white bg-blue-900 py-2"
+              className={`w-full rounded-md text-white bg-blue-900 py-2 ${isLoading ? "opacity-50" : ""}`}
               onClick={handleSubmit(submitFn)}
+              disabled={isLoading}
             >
               Register
             </button>

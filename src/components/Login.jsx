@@ -12,10 +12,12 @@ export default function Login() {
   } = useForm()
   const navigate = useNavigate()
   const [serverErrorMessage, setServerErrorMessage] = useState()
+  const [isLoading, setIsLoading] = useState(false)
 
   const submitFn = async (data) => {
     setServerErrorMessage()
     try {
+      setIsLoading(true)
       const response = await fetch(`${import.meta.env.VITE_BASE_URL}/users/login`, {
         method: "POST",
         headers: {
@@ -30,12 +32,15 @@ export default function Login() {
       const responseJSON = await response.json()
 
       if (responseJSON.success) {
+        setIsLoading(false)
         navigate("/events")
         return setFetchUser((prev) => !prev)
       } else {
+        setIsLoading(false)
         setServerErrorMessage(responseJSON.message)
       }
     } catch (error) {
+      setIsLoading(false)
       console.error(error)
     }
   }
@@ -75,8 +80,9 @@ export default function Login() {
           <div>
             <button
               type="submit"
-              className="w-full rounded-md text-white bg-blue-900 py-2"
+              className={`w-full rounded-md text-white bg-blue-900 py-2 ${isLoading ? "opacity-50" : ""}`}
               onClick={handleSubmit(submitFn)}
+              disabled={isLoading}
             >
               Log In
             </button>
