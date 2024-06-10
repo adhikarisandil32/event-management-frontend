@@ -7,7 +7,7 @@ export default function InactiveUserRoute({ children }) {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (currentUser) return navigate("/")
+    if (currentUser) return navigate("/events")
   })
 
   return <>{children}</>

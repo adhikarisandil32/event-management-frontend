@@ -9,7 +9,7 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
     register,
-  } = useForm()
+  } = useForm({ defaultValues: { email: "johndoe@gmail.com", password: "12345678" } })
   const navigate = useNavigate()
   const [serverErrorMessage, setServerErrorMessage] = useState()
   const [isLoading, setIsLoading] = useState(false)
